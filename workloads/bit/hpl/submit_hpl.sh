@@ -106,17 +106,17 @@ MOUNT=$(pwd):/datfiles
 
 # nvidia-smi must be setup for setting clocks
 
-SUDOCLOCKS=${SUDOCLOCKS:-"sudo"}
-srun -N ${NNODES} -n${NNODES} ${SUDOCLOCKS} nvidia-smi -lgc ${NV_GPUCLOCK}
+#SUDOCLOCKS=${SUDOCLOCKS:-"sudo"}
+#srun -N ${NNODES} -n${NNODES} ${SUDOCLOCKS} nvidia-smi -lgc ${NV_GPUCLOCK}
 
 # Now run the container
 
 case ${CRUNTIME} in
     enroot)
-        CMD="srun --mpi=pmi2 -N ${NNODES} --ntasks-per-node=${GPUS_PER_NODE} \
-                 --container-image="${CONT}" --container-mounts="${MOUNT}" \
-                /workspace/hpl.sh --config ${SYSCFGDIR}${SYSCFGVAR} ${USEHPLAI}  --dat /datfiles/HPL.dat"
-        ;;
+        CMD="srun --mpi=pmix -N ${NNODES} --ntasks-per-node=${GPUS_PER_NODE} \
+            --container-image="${CONT}" --container-mounts="${MOUNT}" \
+            /workspace/hpl.sh --xhpl-ai --dat /datfiles/HPL.dat  --gpu-affinity 0:1:2:3:4:5:6:7"
+	;;
     singularity)
         CMD="srun --mpi=pmi2 -N ${NNODES} --ntasks-per-node=${GPUS_PER_NODE} \
                 singularity run --nv -B "${MOUNT}" "${CONT}" \

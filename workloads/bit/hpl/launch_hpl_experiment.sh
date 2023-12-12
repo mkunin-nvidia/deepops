@@ -20,7 +20,7 @@ export HPL_SCRIPTS_DIR=${HPL_SCRIPTS_DIR:-${HPL_DIR}} # The shared directory whe
 
 ## Set default options
 niters=5
-partition="batch"
+partition="defq"
 usegres=1
 hplai=0
 maxnodes=9999
@@ -29,8 +29,8 @@ mpiopts=""
 walltime=1:00:00
 verbose=0
 nores=0
-cruntime=singularity
-container="nvcr.io/nvidia/hpc-benchmarks:21.4-hpl"
+cruntime=enroot
+container="hpc-benchmarks.23.5.sqsh"
 ORDER_CMD="cat"
 slurmopts=""
 
@@ -160,6 +160,10 @@ elif [ x"${system}" == x"dgxa100_40G" ]; then
 elif [ x"${system}" == x"dgxa100_80G" ]; then
     export gpus_per_node=8
     export SYSCFG=syscfg-dgxa100-80gb.sh
+    export GPUMEM=80
+elif [ x"${system}" == x"dgxh100_80G" ]; then
+    export gpus_per_node=8
+    export SYSCFG=syscfg-dgxh100-80gb.sh
     export GPUMEM=80
 else
     echo "GENERIC SYSTEMS are not supported yet"
