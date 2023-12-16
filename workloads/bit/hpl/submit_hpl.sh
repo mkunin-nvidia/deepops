@@ -105,7 +105,7 @@ MOUNT=$(pwd):/datfiles
 # First Set clocks
 
 # nvidia-smi must be setup for setting clocks
-
+#NV_GPUCLOCK="1410"
 #SUDOCLOCKS=${SUDOCLOCKS:-"sudo"}
 #srun -N ${NNODES} -n${NNODES} ${SUDOCLOCKS} nvidia-smi -lgc ${NV_GPUCLOCK}
 
@@ -115,7 +115,8 @@ case ${CRUNTIME} in
     enroot)
         CMD="srun --mpi=pmix -N ${NNODES} --ntasks-per-node=${GPUS_PER_NODE} \
             --container-image="${CONT}" --container-mounts="${MOUNT}" \
-            /workspace/hpl.sh --xhpl-ai --dat /datfiles/HPL.dat  --gpu-affinity 0:1:2:3:4:5:6:7"
+            /workspace/hpl.sh --xhpl-ai --dat /datfiles/HPL.dat  --gpu-affinity 0:1:2:3:4:5:6:7 --mem-affinity 0:0:0:0:1:1:1:1 \
+	          --cpu-affinity 0-13:14-27:28-41:42-55:56-69:70-83:84-97:98-111"
 	;;
     singularity)
         CMD="srun --mpi=pmi2 -N ${NNODES} --ntasks-per-node=${GPUS_PER_NODE} \
