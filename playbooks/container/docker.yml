@@ -4,15 +4,7 @@
   become_method: sudo
   tags:
   - docker
-  vars_files:
-    # include kubespray-defaults here so that we can set the facts using the
-    # kubespray 0020-set_facts.yml tasks
-    - ../../submodules/kubespray/roles/kubespray-defaults/defaults/main.yaml
-    - ../../submodules/kubespray/roles/kubernetes/preinstall/defaults/main.yml
   tasks:
-    - name: include kubespray task to set facts required for docker role
-      include: ../../submodules/kubespray/roles/kubernetes/preinstall/tasks/0020-set_facts.yml
-      when: docker_install | default('yes')
     - name: remove docker overrides, specifically to deal with conflicting options from DGX OS
       file:
         path: /etc/systemd/system/docker.service.d/docker-override.conf
@@ -25,13 +17,11 @@
   tags:
   - docker
   vars:
-    # override deprecated dockerproject repo; old docker repo broken as of 03.04.2020
-    dockerproject_rh_repo_base_url: 'https://download.docker.com/linux/centos/7/$basearch/stable'
-    dockerproject_rh_repo_gpgkey: 'https://download.docker.com/linux/centos/gpg'
-    fallback_ips: []
+    pip_install_packages:
+      - name: docker
   roles:
-    - role: kubespray-defaults
+    - role: geerlingguy.pip
       when: docker_install | default('yes')
-    - role: "../../submodules/kubespray/roles/container-engine/docker"
+    - role: geerlingguy.docker
       when: docker_install | default('yes')
   environment: "{{ proxy_env if proxy_env is defined else {} }}"

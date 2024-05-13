@@ -72,3 +72,8 @@ roles:
 
 - src: gantsign.golang
   version: 3.1.6
+
+- src: geerlingguy.docker
+  version: '7.0.1'
+
+- src: geerlingguy.pip
